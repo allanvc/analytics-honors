@@ -1,7 +1,7 @@
 ---
 title: "The Power of Data Analytics"
 subtitle: "How Data is Transforming Business Decisions"
-author: "Your Name"
+author: "Allan Quadros, Ph.D."
 format:
   revealjs:
     theme: default
@@ -23,6 +23,7 @@ execute:
   warning: false
   message: false
 ---
+
 ```{css}
 /* Custom CSS for widget sizing */
 .html-widget {
@@ -48,6 +49,7 @@ execute:
   gap: 1em;
 }
 ```
+
 ```{r setup}
 #| include: false
 library(tidyverse)
@@ -80,9 +82,9 @@ plotly_config_hq <- function(p) {
 }
 ```
 
-## {background-image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600" background-opacity="0.3"}
+##  {background-image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600" background-opacity="0.3"}
 
-::: {.r-fit-text}
+::: r-fit-text
 **How did Netflix know**
 
 **House of Cards**
@@ -92,13 +94,13 @@ plotly_config_hq <- function(p) {
 **BEFORE filming?**
 :::
 
-::: {.notes}
+::: notes
 Opening hook - get their attention immediately
 :::
 
 ## The Netflix Algorithm {.smaller}
 
-::: {.columns}
+::: columns
 ::: {.column width="48%"}
 ::: {style="font-size: 0.85em;"}
 **The Data Science Behind the Decision:**
@@ -113,7 +115,7 @@ Netflix analyzed **millions** of viewing behaviors and discovered three critical
 
 **The Insight:** These three audiences overlapped significantly. People who loved Fincher's style AND Spacey's performances AND political dramas = **perfect target audience**
 
-**Result:** $100M investment with 90% confidence = Massive hit
+**Result:** \$100M investment in the right project = Massive hit
 :::
 :::
 
@@ -213,11 +215,12 @@ visNetwork(nodes, edges, width = "100%", height = "500px") %>%
 ## Today's Journey {background-color="#1a1a1a"}
 
 ::: {style="color: white;"}
-::: {.incremental}
-1. **Mind-Blowing Cases** - When data reveals the unexpected
-2. **Surprising Applications** - Analytics in unexpected places
-3. **The Future** - AI is changing everything
-4. **Transferable Skills** - One technique, infinite applications
+::: incremental
+1.  **Mind-Blowing Cases** - When data reveals the unexpected
+2.  **Surprising Applications** - Analytics in unexpected places
+3.  **Transferable Skills** - One technique, infinite applications
+4.  **The Future** - AI is changing everything
+
 :::
 :::
 
@@ -225,7 +228,7 @@ visNetwork(nodes, edges, width = "100%", height = "500px") %>%
 
 ## Target Knew She Was Pregnant {.smaller}
 
-::: {.columns}
+::: columns
 ::: {.column width="40%"}
 ![](./img/target.png)
 
@@ -295,6 +298,7 @@ Unscented lotion, calcium, magnesium, zinc supplements...
 :::
 
 ## Spotify Knows Your Heartbreak {.smaller}
+
 ```{r spotify-emotions}
 # Simulated data about music mood changes
 set.seed(456)
@@ -349,26 +353,27 @@ p
 
 ::: {.callout-tip icon="false"}
 ## Spotify detected:
-- Breakup playlists surge 400% in February
-- "Sad Songs" peak at 2 AM
-- Recovery pattern: Angry Rock → Sad Songs → Chill Vibes → Happy Hits
+
+-   Breakup playlists surge 400% in February
+-   "Sad Songs" peak at 2 AM
+-   Recovery pattern: Angry Rock → Sad Songs → Chill Vibes → Happy Hits
 :::
 
 ## Dynamic Pricing in Action {.smaller}
 
-::: {.columns}
+::: columns
 ::: {.column width="50%"}
 **Uber's Surge Pricing Algorithm considers:**
 
-::: {.incremental}
-- Current demand (riders requesting)
-- Available supply (active drivers)
-- Time of day
-- Day of week
-- Weather conditions
-- Local events
-- Historical patterns
-- Traffic conditions
+::: incremental
+-   Current demand (riders requesting)
+-   Available supply (active drivers)
+-   Time of day
+-   Day of week
+-   Weather conditions
+-   Local events
+-   Historical patterns
+-   Traffic conditions
 :::
 
 **Result:** Prices change every 2-5 minutes
@@ -412,8 +417,9 @@ p <- plot_ly(pricing_data, height = 400) %>%
 p
 ```
 
-::: {.callout-important}
+::: callout-important
 ## The Impact
+
 Optimizes **driver distribution** + **maximizes revenue** + **manages demand**
 :::
 :::
@@ -429,9 +435,10 @@ Optimizes **driver distribution** + **maximizes revenue** + **manages demand**
 **Collaborative Filtering - The Universal Recommender:**
 :::
 
-::: {.panel-tabset}
+::: panel-tabset
 ### E-commerce
-::: {.columns}
+
+::: columns
 ::: {.column width="55%"}
 ```{r recommendation-ecommerce}
 library(tidygraph)
@@ -477,26 +484,22 @@ visNetwork(nodes = vis_data$nodes, edges = vis_data$edges, width = "100%", heigh
 ::: {style="font-size: 0.85em;"}
 **Amazon: "Customers who bought this also bought..."**
 
-**How it works:**
-- Analyzes millions of purchase histories
-- Finds patterns in co-purchasing behavior
-- Recommends based on similarity
+**How it works:** - Analyzes millions of purchase histories - Finds patterns in co-purchasing behavior - Recommends based on similarity
 
-**Business Value:**
-- **35% of Amazon's revenue** from recommendations
-- Increases average order value by **20-30%**
-- Improves customer experience
+**Business Value:** - **35% of Amazon's revenue** from recommendations - Increases average order value by **20-30%** - Improves customer experience
 :::
 
 ::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
 ## Key Insight
+
 Same purchase patterns = Similar preferences
 :::
 :::
 :::
 
 ### Healthcare
-::: {.columns}
+
+::: columns
 ::: {.column width="55%"}
 ```{r recommendation-health}
 library(tidygraph)
@@ -536,27 +539,22 @@ visNetwork(nodes = vis_data$nodes, edges = vis_data$edges, width = "100%", heigh
 ::: {style="font-size: 0.85em;"}
 **Treatment recommendations based on similar patient outcomes**
 
-**How it works:**
-- Analyzes thousands of clinical cases
-- Matches symptoms to diagnoses (92% accuracy)
-- Suggests treatments with best outcomes
+**How it works:** - Analyzes thousands of clinical cases - Matches symptoms to diagnoses (92% accuracy) - Suggests treatments with best outcomes
 
-**Business Value:**
-- Reduces diagnostic errors
-- Faster, evidence-based decisions
-- Lower costs through fewer unnecessary tests
-- Better patient outcomes
+**Business Value:** - Reduces diagnostic errors - Faster, evidence-based decisions - Lower costs through fewer unnecessary tests - Better patient outcomes
 :::
 
 ::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
 ## Key Insight
+
 Similar symptoms = Similar treatments work
 :::
 :::
 :::
 
 ### Hiring
-::: {.columns}
+
+::: columns
 ::: {.column width="55%"}
 ```{r recommendation-hiring}
 library(tidygraph)
@@ -594,27 +592,22 @@ visNetwork(nodes = vis_data$nodes, edges = vis_data$edges, width = "100%", heigh
 ::: {style="font-size: 0.85em;"}
 **LinkedIn matching candidates to roles**
 
-**How it works:**
-- Analyzes profiles of successful employees
-- Compares candidate characteristics
-- Ranks by similarity to top performers
+**How it works:** - Analyzes profiles of successful employees - Compares candidate characteristics - Ranks by similarity to top performers
 
-**Business Value:**
-- **40% higher retention** for AI-matched hires
-- Reduces time-to-hire from months to weeks
-- Better culture fit
-- Removes unconscious bias
+**Business Value:** - **40% higher retention** for AI-matched hires - Reduces time-to-hire from months to weeks - Better culture fit - Removes unconscious bias
 :::
 
 ::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
 ## Key Insight
+
 Similar profiles = Similar success
 :::
 :::
 :::
 
 ### Fraud Detection
-::: {.columns}
+
+::: columns
 ::: {.column width="55%"}
 ```{r fraud-detection-tab}
 set.seed(111)
@@ -650,27 +643,22 @@ p
 ::: {style="font-size: 0.85em;"}
 **Credit card fraud detection in milliseconds**
 
-**How it works:**
-- Analyzes transaction patterns in real-time
-- Compares to user's behavior history
-- Flags anomalies above risk threshold
+**How it works:** - Analyzes transaction patterns in real-time - Compares to user's behavior history - Flags anomalies above risk threshold
 
-**Business Value:**
-- **95%** fraud detection rate
-- **0.1%** false positive rate
-- Saves banks **$billions** annually
-- Protects customers in real-time
+**Business Value:** - **95%** fraud detection rate - **0.1%** false positive rate - Saves banks **\$billions** annually - Protects customers in real-time
 :::
 
 ::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
 ## Key Insight
+
 Unusual behavior = Potential fraud
 :::
 :::
 :::
 
 ### Sentiment Analysis
-::: {.columns}
+
+::: columns
 ::: {.column width="60%"}
 ```{r sentiment-analysis-stocks}
 library(quantmod)
@@ -788,20 +776,14 @@ stock_prices_df2 %>%
 ::: {style="font-size: 0.85em;"}
 **NLP analyzes earnings reports to predict market sentiment**
 
-**How it works:**
-- Processes text from earnings calls
-- Extracts sentiment (positive/negative/neutral)
-- Combines with price & volume data
+**How it works:** - Processes text from earnings calls - Extracts sentiment (positive/negative/neutral) - Combines with price & volume data
 
-**Business Value:**
-- Real-time sentiment tracking
-- Predicts stock movements
-- Informs trading decisions
-- Quantifies qualitative data
+**Business Value:** - Real-time sentiment tracking - Predicts stock movements - Informs trading decisions - Quantifies qualitative data
 :::
 
 ::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
 ## Key Insight
+
 Language patterns = Market sentiment
 :::
 :::
@@ -810,9 +792,10 @@ Language patterns = Market sentiment
 
 ## Clustering: Pattern Recognition {.smaller}
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Customer Segmentation
-::: {.columns}
+
+::: columns
 ::: {.column width="60%"}
 ```{r clustering-customers}
 set.seed(100)
@@ -843,17 +826,14 @@ p
 ::: {style="font-size: 0.85em;"}
 **K-means clustering identifies customer groups**
 
-**Business Value:**
-- Target marketing campaigns
-- Personalize offers
-- Optimize pricing strategies
-- Allocate resources efficiently
+**Business Value:** - Target marketing campaigns - Personalize offers - Optimize pricing strategies - Allocate resources efficiently
 :::
 :::
 :::
 
 ### Disease Patterns
-::: {.columns}
+
+::: columns
 ::: {.column width="60%"}
 ```{r clustering-disease}
 set.seed(200)
@@ -884,17 +864,14 @@ p
 ::: {style="font-size: 0.85em;"}
 **Clustering identifies disease subtypes**
 
-**Business Value:**
-- Faster diagnosis
-- Personalized treatment plans
-- Drug development targeting
-- Better patient outcomes
+**Business Value:** - Faster diagnosis - Personalized treatment plans - Drug development targeting - Better patient outcomes
 :::
 :::
 :::
 
 ### Market Segments
-::: {.columns}
+
+::: columns
 ::: {.column width="60%"}
 ```{r clustering-market}
 set.seed(300)
@@ -925,17 +902,14 @@ p
 ::: {style="font-size: 0.85em;"}
 **Clustering reveals competitive landscape**
 
-**Business Value:**
-- Identify market opportunities
-- Benchmark against competitors
-- Strategic positioning
-- Investment decisions
+**Business Value:** - Identify market opportunities - Benchmark against competitors - Strategic positioning - Investment decisions
 :::
 :::
 :::
 
 ### Image Compression
-::: {.columns}
+
+::: columns
 ::: {.column width="65%"}
 ```{r clustering-image-compression}
 library(jpeg)
@@ -991,11 +965,7 @@ plot_grid(p1, p2, ncol = 2)
 ::: {style="font-size: 0.85em;"}
 **Clustering in 5D (x, y, R, G, B)**
 
-**Business Value:**
-- Reduces file size by 80-90%
-- Faster image loading
-- Lower bandwidth costs
-- Maintains visual quality
+**Business Value:** - Reduces file size by 80-90% - Faster image loading - Lower bandwidth costs - Maintains visual quality
 :::
 :::
 :::
@@ -1005,10 +975,11 @@ plot_grid(p1, p2, ncol = 2)
 
 ## GenAI is Democratizing Analytics {.smaller}
 
-::: {.columns}
+::: columns
 ::: {.column width="50%"}
 **Before (2023):**
-```python
+
+``` python
 # You needed to write SQL
 SELECT 
   customer_id,
@@ -1027,20 +998,22 @@ ORDER BY total DESC;
 ::: {.column width="50%"}
 **Now (2025):**
 
-> *"Show me customers who spent more than $1000 this year, sorted by total spending"*
+> *"Show me customers who spent more than \$1000 this year, sorted by total spending"*
 
 **Required:** Natural language
 
 ::: {.callout-tip icon="false"}
 ## The Change
-- ChatGPT writes the code
-- Anyone can analyze data
-- **No technical barrier**
+
+-   ChatGPT writes the code
+-   Anyone can analyze data
+-   **No technical barrier**
 :::
 :::
 :::
 
 ## But... New Challenges {.smaller}
+
 ```{r ai-challenges}
 challenges <- tibble(
   challenge = c("Hallucinations", "Bias Amplification", "Black Box", 
@@ -1071,13 +1044,13 @@ p <- plot_ly(challenges, x = ~frequency, y = ~severity,
 p
 ```
 
-::: {.callout-warning}
+::: callout-warning
 ## Critical: AI doesn't replace critical thinking - it amplifies it
 :::
 
 ## The Future Analyst {.smaller}
 
-::: {.columns}
+::: columns
 ::: {.column width="60%"}
 ```{r future-skills}
 skills <- tibble(
@@ -1113,16 +1086,17 @@ p
 ::: {.column width="40%"}
 **The New Skillset:**
 
-::: {.incremental}
-1. **Ask better questions** (not just write code)
-2. **Validate AI outputs** (critical thinking)
-3. **Understand context** (business acumen)
-4. **Navigate ethics** (responsibility)
-5. **Communicate insights** (storytelling)
+::: incremental
+1.  **Ask better questions** (not just write code)
+2.  **Validate AI outputs** (critical thinking)
+3.  **Understand context** (business acumen)
+4.  **Navigate ethics** (responsibility)
+5.  **Communicate insights** (storytelling)
 :::
 
 ::: {.fragment .callout-note}
 ## Bottom Line
+
 Technical skills are **table stakes**.
 
 **Strategic thinking** is the differentiator.
@@ -1134,16 +1108,16 @@ Technical skills are **table stakes**.
 
 ## Conclusions {.smaller}
 
-::: {.incremental}
-1. **Data reveals hidden patterns** - Target, Spotify, Uber all see what humans miss
+::: incremental
+1.  **Data reveals hidden patterns** - Target, Spotify, Uber all see what humans miss
 
-2. **Analytics is everywhere** - From healthcare to hurricanes
+2.  **Analytics is everywhere** - From healthcare to hurricanes
 
-3. **Techniques are transferable** - Learn one algorithm, solve many problems
+3.  **Techniques are transferable** - Learn one algorithm, solve many problems
 
-4. **AI is a tool, not magic** - Amplifies both insights AND biases
+4.  **AI is a tool, not magic** - Amplifies both insights AND biases
 
-5. **The future belongs to critical thinkers** - Not just data crunchers
+5.  **The future belongs to critical thinkers** - Not just data crunchers
 :::
 
 ## Your Competitive Advantage {background-image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600" background-opacity="0.2"}
@@ -1158,21 +1132,22 @@ will also be a
 **data manager**
 :::
 
-::: {.fragment}
+::: fragment
 ::: {.callout-tip icon="false" style="margin-top: 8px;"}
 ## The Question
+
 Will you use analytics **better** than your competitors?
 :::
 :::
 
-## {background-color="#000000"}
+##  {background-color="#000000"}
 
-::: {.r-fit-text}
+::: r-fit-text
 **Thank You!**
 :::
 
 ::: {style="margin-top: 70px; font-size: 0.5em; color: #888;"}
-Contact: allan.quadros@unf.edu
+Contact: allan.quadros\@unf.edu
 
 Slides: https://allanvc.github.io/analytics-honors
 :::
