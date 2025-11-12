@@ -793,7 +793,7 @@ Language patterns = Market sentiment
 ## Clustering: Pattern Recognition {.smaller}
 
 ::: {style="font-size: 0.75em;"}
-**Supervised Learning Algorithms:**
+**Unsupervised Learning Algorithms:**
 :::
 
 ::: panel-tabset
