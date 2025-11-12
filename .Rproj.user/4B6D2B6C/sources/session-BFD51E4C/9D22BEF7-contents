@@ -1,0 +1,97 @@
+# Load the package
+library(jpeg)
+url <- "https://t3.ftcdn.net/jpg/06/10/68/10/360_F_610681075_9NnfeAB9rIjAccA11S0lmIbEfdt1RMEM.jpg"
+url <- "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgubnFMq4Ex3R0Csr6YexaRJ5NYpgXp94xHo58rlluSPwCTaaBZ_t1J8XUXKjUcF1TAuQ7MxoU5iXRhojop0NPLTjm1_NsaqTWzxT4GawvVRbfvWakepNpqqZohCWrrzIzXMoimpsOMECZa/s1600/ColorfulBird.jpg" 
+# Download the file and save it as "Image.jpg" in the directory
+dFile <- download.file(url, "Image.jpg")
+img <- readJPEG("Image.jpg") # Read the image
+
+
+# Obtain the dimension
+imgDm <- dim(img)
+
+# Assign RGB channels to data frame
+imgRGB <- data.frame(
+  x = rep(1:imgDm[2], each = imgDm[1]),
+  y = rep(imgDm[1]:1, imgDm[2]),
+  R = as.vector(img[,,1]),
+  G = as.vector(img[,,2]),
+  B = as.vector(img[,,3])
+)
+
+
+
+library(ggplot2)
+
+# ggplot theme to be used
+plotTheme <- function() {
+  theme(
+    panel.background = element_rect(
+      linewidth = 3,
+      colour = "black",
+      fill = "white"),
+    axis.ticks = element_line(
+      size = 2),
+    panel.grid.major = element_line(
+      colour = "gray80",
+      linetype = "dotted"),
+    panel.grid.minor = element_line(
+      colour = "gray90",
+      linetype = "dashed"),
+    axis.title.x = element_text(
+      size = rel(1.2),
+      face = "bold"),
+    axis.title.y = element_text(
+      size = rel(1.2),
+      face = "bold"),
+    plot.title = element_text(
+      size = 20,
+      face = "bold",
+      vjust = 1.5)
+  )
+}
+
+# Plot the image
+ggplot(data = imgRGB, aes(x = x, y = y)) + 
+  geom_raster(fill = rgb(imgRGB[c("R", "G", "B")])) +
+  labs(title = "Original Image: Colorful Bird") +
+  xlab("x") +
+  ylab("y") +
+  theme_bw()
+#plotTheme()
+
+# ==================
+
+##### modified to use pixel location and color
+feat <- imgRGB[, c("x","y","R","G","B")]
+feat_scaled <- scale(feat)         # standardize all 5 features
+
+set.seed(1)
+kClusters <- 10
+km5 <- kmeans(feat_scaled, centers = kClusters, nstart = 5)
+
+# 2) Classe de cada pixel
+imgRGB$cluster <- km5$cluster
+
+# 3) Paleta: média do RGB original por cluster (0-1)
+palette <- imgRGB %>%
+  group_by(cluster) %>%
+  summarize(
+    R = mean(R),
+    G = mean(G),
+    B = mean(B),
+    .groups = "drop"
+  ) %>%
+  mutate(hex = rgb(R, G, B))
+
+# 4) Anexa a cor de cada cluster a cada pixel
+imgRGB_plot <- imgRGB %>%
+  left_join(palette, by = "cluster")
+
+# 5) Plot (raster é mais rápido que point por pixel)
+ggplot(imgRGB_plot, aes(x = x, y = y, fill = hex)) +
+  geom_raster() +
+  scale_fill_identity() +
+  coord_equal() +
+  labs(title = paste("k-means in 5D (x,y,RGB) with", kClusters, "colors")) +
+  theme_void()

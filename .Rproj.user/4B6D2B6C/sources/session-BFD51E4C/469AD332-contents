@@ -1,0 +1,1178 @@
+---
+title: "The Power of Data Analytics"
+subtitle: "How Data is Transforming Business Decisions"
+author: "Your Name"
+format:
+  revealjs:
+    theme: default
+    transition: slide
+    background-transition: fade
+    slide-number: true
+    logo: ""
+    footer: "Data Analytics for Management | 2025"
+    incremental: false
+    code-fold: true
+    code-tools: true
+    html-math-method: katex
+    css: custom.scss
+    fig-dpi: 1200
+    fig-format: svg
+editor: visual
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+```{css}
+/* Custom CSS for widget sizing */
+.html-widget {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.reveal .plotly {
+  max-height: 450px !important;
+}
+
+.reveal .vis-network {
+  max-height: 450px !important;
+}
+
+/* Prevent horizontal scrolling */
+.reveal {
+  overflow-x: hidden;
+}
+
+/* Better spacing for smaller slides */
+.smaller .columns {
+  gap: 1em;
+}
+```
+```{r setup}
+#| include: false
+library(tidyverse)
+library(plotly)
+library(visNetwork)
+library(DT)
+library(htmltools)
+library(scales)
+library(viridis)
+
+# Set theme
+theme_set(theme_minimal(base_size = 14))
+
+# Function to create high-quality plotly configs for retina displays
+plotly_config_hq <- function(p) {
+  p %>% 
+    config(
+      toImageButtonOptions = list(
+        format = "png",
+        width = 1600,
+        height = 1200,
+        scale = 2
+      ),
+      displayModeBar = FALSE
+    ) %>%
+    layout(
+      font = list(family = "Arial, sans-serif"),
+      hoverlabel = list(font = list(size = 14))
+    )
+}
+```
+
+## {background-image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600" background-opacity="0.3"}
+
+::: {.r-fit-text}
+**How did Netflix know**
+
+**House of Cards**
+
+**would be a hit**
+
+**BEFORE filming?**
+:::
+
+::: {.notes}
+Opening hook - get their attention immediately
+:::
+
+## The Netflix Algorithm {.smaller}
+
+::: {.columns}
+::: {.column width="48%"}
+::: {style="font-size: 0.85em;"}
+**The Data Science Behind the Decision:**
+
+Netflix analyzed **millions** of viewing behaviors and discovered three critical overlaps:
+
+**1. Director Appeal:** Fans who binged David Fincher's dark, methodical films (Se7en, Fight Club, Zodiac) showed 73% higher engagement
+
+**2. Actor Following:** Kevin Spacey's sophisticated, morally complex characters attracted a loyal demographic
+
+**3. British Original Success:** The 1990 BBC "House of Cards" had a cult following that rewatched episodes multiple times
+
+**The Insight:** These three audiences overlapped significantly. People who loved Fincher's style AND Spacey's performances AND political dramas = **perfect target audience**
+
+**Result:** $100M investment with 90% confidence = Massive hit
+:::
+:::
+
+::: {.column width="52%"}
+```{r netflix-network, fig.retina=2}
+# Create a more sophisticated network with REAL high-quality images
+nodes <- data.frame(
+  id = 1:9,
+  label = c("House of Cards\n(2013)", "David Fincher\nDirector", "Kevin Spacey\nActor", 
+            "British Original\n(1990)", "Political Drama\nFans", "Thriller\nAudience",
+            "Binge Watchers", "Premium Content", "Dark Narratives"),
+  shape = c("circularImage", "circularImage", "circularImage", "circularImage", 
+            "circularImage", "circularImage", "circularImage", "circularImage", "circularImage"),
+  image = c(
+    "./img/HOC1.png",
+    "./img/seven.jpg",
+    "./img/kevin-spacey.jpg",
+    "./img/HOC-bbc.png",
+    "", "", "/img/netflix.png", "", ""
+  ),
+  group = c("show", "talent", "talent", "content", "audience", "audience", "behavior", "behavior", "audience"),
+  value = c(40, 35, 35, 30, 25, 25, 28, 28, 26),
+  title = c(
+    "<b>House of Cards (2013)</b><br>$100M Netflix Bet<br>First major original series",
+    "<b>David Fincher</b><br>Directed Episodes 1-2<br>Se7en, Fight Club, Zodiac<br>Dark storytelling master",
+    "<b>Kevin Spacey</b><br>Frank Underwood<br>Two-time Oscar winner<br>Complex characters", 
+    "<b>House of Cards (1990)</b><br>BBC Original<br>Ian Richardson<br>Cult following",
+    "<b>Political Drama Fans</b><br>Educated viewers<br>Power dynamics interest",
+    "<b>Thriller Audience</b><br>Suspense lovers<br>Breaking Bad fans",
+    "<b>Binge Watchers</b><br>5+ episodes/session<br>Core Netflix demo",
+    "<b>Premium Consumers</b><br>Pay for quality<br>Cut cable",
+    "<b>Dark Narrative Fans</b><br>Nuanced stories<br>Anti-heroes"
+  ),
+  borderWidth = 4,
+  color.border = c("#e74c3c", "#3498db", "#3498db", "#9b59b6", "#27ae60", "#27ae60", "#f39c12", "#f39c12", "#27ae60"),
+  color.highlight.border = "#e74c3c",
+  color.highlight.background = "#ffffff",
+  size = c(182, 178, 178, 174, 170, 170, 170, 170, 170)
+)
+
+edges <- data.frame(
+  from = c(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4),
+  to = c(1, 1, 1, 1, 1, 1, 1, 1, 9, 5, 5),
+  value = c(5, 5, 4, 3, 3, 4, 3, 3, 3, 3, 4),
+  title = c("Creative Vision", "Star Power", "Proven Concept", 
+            "Core Audience", "Genre Appeal", "Viewing Pattern",
+            "Revenue Driver", "Content Pref",
+            "Style Match", "Character Depth", "Political Theme"),
+  width = c(3.5, 3.5, 3, 2.5, 2.5, 3, 2.5, 2.5, 2.5, 2.5, 3),
+  dashes = FALSE
+)
+
+visNetwork(nodes, edges, width = "100%", height = "500px") %>%
+  visNodes(
+    shapeProperties = list(useBorderWithImage = TRUE, useImageSize = FALSE),
+    font = list(size = 13, face = "Arial", color = "#2c3e50"),
+    shadow = list(enabled = TRUE, size = 12, x = 4, y = 4, color = "rgba(0,0,0,0.3)")
+  ) %>%
+  visEdges(
+    arrows = list(to = list(enabled = TRUE, scaleFactor = 0.7, type = "arrow")),
+    smooth = list(enabled = TRUE, type = "curvedCW", roundness = 0.2),
+    color = list(color = "#95a5a6", highlight = "#e74c3c", hover = "#e67e22", opacity = 0.8),
+    shadow = list(enabled = TRUE, size = 5),
+    hoverWidth = 1.5
+  ) %>%
+  visPhysics(
+    enabled = TRUE,
+    solver = "forceAtlas2Based",
+    forceAtlas2Based = list(
+      gravitationalConstant = -60, 
+      springLength = 150, 
+      springConstant = 0.04,
+      damping = 0.5
+    ),
+    stabilization = list(iterations = 250, updateInterval = 50)
+  ) %>%
+  visInteraction(
+    hover = TRUE, 
+    tooltipDelay = 50,
+    tooltipStyle = 'position: fixed; visibility: hidden; padding: 1px; white-space: normal; max-width: 250px; font: 12px arial; background-color: #f5f5f5; color: #000000; border: 1px solid #333; border-radius: 3px; right: -1px;',
+    navigationButtons = FALSE, 
+    dragNodes = TRUE,
+    dragView = TRUE,
+    zoomView = TRUE,
+    hideEdgesOnDrag = FALSE,
+    hideNodesOnDrag = FALSE
+  ) %>%
+  visLayout(randomSeed = 42, improvedLayout = TRUE) %>%
+  visOptions(
+    highlightNearest = list(enabled = TRUE, degree = 1, hover = TRUE),
+    nodesIdSelection = FALSE
+  )
+```
+:::
+:::
+
+## Today's Journey {background-color="#1a1a1a"}
+
+::: {style="color: white;"}
+::: {.incremental}
+1. **Mind-Blowing Cases** - When data reveals the unexpected
+2. **Surprising Applications** - Analytics in unexpected places
+3. **The Future** - AI is changing everything
+4. **Transferable Skills** - One technique, infinite applications
+:::
+:::
+
+# Mind-Blowing Cases {background-color="#e74c3c"}
+
+## Target Knew She Was Pregnant {.smaller}
+
+::: {.columns}
+::: {.column width="40%"}
+![](./img/target.png)
+
+**The Story:**
+
+Angry father storms into Target:
+
+*"Why are you sending my daughter pregnancy ads? She's in high school!"*
+
+Two weeks later... he apologized.
+
+Target knew before he did.
+:::
+
+::: {.column width="60%"}
+```{r pregnancy-prediction}
+# Simulate purchase pattern changes
+set.seed(123)
+weeks <- -12:12
+baseline_purchases <- tibble(
+  week = weeks,
+  lotions = rpois(length(weeks), 2) + ifelse(weeks > 0, 5, 0),
+  vitamins = rpois(length(weeks), 1) + ifelse(weeks > 0, 8, 0),
+  supplements = rpois(length(weeks), 1) + ifelse(weeks > 0, 6, 0),
+  unscented = rpois(length(weeks), 0) + ifelse(weeks > 0, 4, 0)
+)
+
+plot_data <- baseline_purchases %>%
+  pivot_longer(-week, names_to = "product", values_to = "purchases")
+
+p <- plot_ly(plot_data, x = ~week, y = ~purchases, 
+             color = ~product, type = 'scatter', mode = 'lines+markers',
+             colors = viridis(4), height = 400) %>%
+  layout(
+    title = list(text = "Purchase Pattern Changes Around Pregnancy", font = list(size = 16)),
+    xaxis = list(title = "Weeks from Detection", 
+                 zeroline = TRUE,
+                 zerolinewidth = 2,
+                 zerolinecolor = 'red',
+                 gridcolor = 'rgba(128,128,128,0.2)'),
+    yaxis = list(title = "Items Purchased", gridcolor = 'rgba(128,128,128,0.2)'),
+    hovermode = 'x unified',
+    plot_bgcolor = '#f8f9fa',
+    paper_bgcolor = '#f8f9fa',
+    font = list(size = 13, family = "Arial, sans-serif")
+  ) %>%
+  add_annotations(
+    x = 0, y = 8,
+    text = "Algorithm Detection Point",
+    showarrow = TRUE,
+    arrowhead = 2,
+    arrowcolor = "red",
+    arrowwidth = 2,
+    ax = -40,
+    ay = -40,
+    font = list(size = 12, color = "red")
+  ) %>%
+  plotly_config_hq()
+
+p
+```
+
+**25+ Products = 87% Accuracy**
+
+Unscented lotion, calcium, magnesium, zinc supplements...
+:::
+:::
+
+## Spotify Knows Your Heartbreak {.smaller}
+```{r spotify-emotions}
+# Simulated data about music mood changes
+set.seed(456)
+days <- 1:90
+
+mood_data <- tibble(
+  day = rep(days, 4),
+  playlist = rep(c("Happy Hits", "Sad Songs", "Angry Rock", "Chill Vibes"), each = length(days))
+) %>%
+  mutate(
+    plays = case_when(
+      playlist == "Happy Hits" ~ 50 + rnorm(n(), 0, 5) - (day - 45)^2/50,
+      playlist == "Sad Songs" ~ 10 + rnorm(n(), 0, 3) + 
+        ifelse(day > 30 & day < 60, (day - 30) * 2, 0),
+      playlist == "Angry Rock" ~ 5 + rnorm(n(), 0, 2) + 
+        ifelse(day > 35 & day < 50, 20, 0),
+      playlist == "Chill Vibes" ~ 20 + rnorm(n(), 0, 3) + 
+        ifelse(day > 60, (day - 60)/2, 0)
+    )
+  ) %>%
+  filter(plays > 0)
+
+p <- plot_ly(mood_data, x = ~day, y = ~plays, color = ~playlist,
+             type = 'scatter', mode = 'lines', height = 400,
+             colors = c("#FFD700", "#4169E1", "#DC143C", "#32CD32"),
+             line = list(width = 3)) %>%
+  layout(
+    title = list(text = "Music Listening Patterns Around Relationship Changes", font = list(size = 16)),
+    xaxis = list(title = "Days", dtick = 10, gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Daily Plays", gridcolor = 'rgba(128,128,128,0.1)'),
+    hovermode = 'x unified',
+    shapes = list(
+      list(type = "rect",
+           fillcolor = "red", line = list(color = "red"), opacity = 0.1,
+           x0 = 30, x1 = 45, xref = "x",
+           y0 = 0, y1 = 1, yref = "paper")
+    ),
+    annotations = list(
+      list(x = 37.5, y = 70,
+           text = "Breakup Period",
+           showarrow = FALSE,
+           font = list(color = "red", size = 14, family = "Arial"))
+    ),
+    plot_bgcolor = '#ffffff',
+    paper_bgcolor = '#ffffff',
+    font = list(family = "Arial, sans-serif")
+  ) %>%
+  plotly_config_hq()
+
+p
+```
+
+::: {.callout-tip icon="false"}
+## Spotify detected:
+- Breakup playlists surge 400% in February
+- "Sad Songs" peak at 2 AM
+- Recovery pattern: Angry Rock → Sad Songs → Chill Vibes → Happy Hits
+:::
+
+## Dynamic Pricing in Action {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Uber's Surge Pricing Algorithm considers:**
+
+::: {.incremental}
+- Current demand (riders requesting)
+- Available supply (active drivers)
+- Time of day
+- Day of week
+- Weather conditions
+- Local events
+- Historical patterns
+- Traffic conditions
+:::
+
+**Result:** Prices change every 2-5 minutes
+:::
+
+::: {.column width="50%"}
+```{r surge-pricing}
+# Simulate surge pricing throughout a day
+hours <- 0:23
+set.seed(789)
+
+pricing_data <- tibble(
+  hour = hours,
+  base_price = 10,
+  demand = c(2, 1, 1, 1, 1, 2, 5, 8, 7, 4, 3, 3, 
+             3, 4, 4, 5, 6, 9, 12, 10, 8, 6, 4, 3),
+  multiplier = 1 + (demand - 1) * 0.3,
+  price = base_price * multiplier
+)
+
+p <- plot_ly(pricing_data, height = 400) %>%
+  add_trace(x = ~hour, y = ~price, type = 'scatter', mode = 'lines+markers',
+            name = 'Price', line = list(color = '#00AA00', width = 4),
+            marker = list(size = 10, line = list(width = 2, color = '#ffffff'))) %>%
+  add_trace(x = ~hour, y = ~demand * 2, type = 'bar', name = 'Demand',
+            marker = list(color = '#0066CC', opacity = 0.5)) %>%
+  layout(
+    title = list(text = "Dynamic Pricing Throughout the Day", font = list(size = 16)),
+    xaxis = list(title = "Hour of Day", dtick = 2, gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Price ($)", side = "left", gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis2 = list(title = "Demand Level", overlaying = "y", side = "right"),
+    hovermode = 'x unified',
+    showlegend = TRUE,
+    legend = list(x = 0.7, y = 0.95, bgcolor = 'rgba(255,255,255,0.8)'),
+    plot_bgcolor = '#f8f9fa',
+    paper_bgcolor = '#f8f9fa',
+    font = list(family = "Arial, sans-serif")
+  ) %>%
+  plotly_config_hq()
+
+p
+```
+
+::: {.callout-important}
+## The Impact
+Optimizes **driver distribution** + **maximizes revenue** + **manages demand**
+:::
+:::
+:::
+
+# Surprising Applications {background-color="#3498db"}
+
+# 🔄 Transferable Techniques {background-color="#9b59b6"}
+
+## One Algorithm, Many Applications {.smaller}
+
+::: {style="font-size: 0.75em;"}
+**Collaborative Filtering - The Universal Recommender:**
+:::
+
+::: {.panel-tabset}
+### E-commerce
+::: {.columns}
+::: {.column width="55%"}
+```{r recommendation-ecommerce}
+library(tidygraph)
+
+edges_ecom <- data.frame(
+  from = c("Laptop", "Laptop", "Laptop", "Laptop"),
+  to = c("Mouse", "Keyboard", "USB Hub", "Bag"),
+  label = c("85%", "73%", "68%", "61%"),
+  title = c("85% co-purchase rate", "73% co-purchase rate", "68% co-purchase rate", "61% co-purchase rate")
+)
+
+network_ecom <- as_tbl_graph(edges_ecom, directed = TRUE)
+vis_data <- toVisNetworkData(network_ecom)
+
+vis_data$nodes$image <- c(
+  "https://m.media-amazon.com/images/I/71NZpTxWzRL._AC_UY218_.jpg",
+  "https://m.media-amazon.com/images/I/61ni3t1ryQL._AC_UY218_.jpg",
+  "./img/keyboard.jpg",
+  "https://m.media-amazon.com/images/I/5164giE9fFL._AC_UY218_.jpg",
+  "./img/bag.jpg"
+)
+
+vis_data$nodes$group <- c("anchor", "rec", "rec", "rec", "rec")
+vis_data$nodes$title <- c("Product you bought", "85% also bought", "73% also bought", "68% also bought", "61% also bought")
+
+visNetwork(nodes = vis_data$nodes, edges = vis_data$edges, width = "100%", height = "350px") %>%
+  visGroups(groupname = "anchor", shape = "image", 
+            color = list(border = "#e74c3c", background = "#fff"), borderWidth = 3) %>%
+  visGroups(groupname = "rec", shape = "image",
+            color = list(border = "#27ae60", background = "#fff"), borderWidth = 2) %>%
+  visEdges(arrows = "to", smooth = TRUE, font = list(size = 11),
+           color = list(color = "#95a5a6", highlight = "#e74c3c")) %>%
+  visOptions(highlightNearest = list(enabled = TRUE, hover = TRUE)) %>%
+  visInteraction(hover = TRUE, dragNodes = TRUE, dragView = TRUE, zoomView = TRUE) %>%
+  visLayout(randomSeed = 123) %>%
+  visPhysics(enabled = TRUE, solver = "forceAtlas2Based",
+    forceAtlas2Based = list(gravitationalConstant = -80, springLength = 150, springConstant = 0.05),
+    stabilization = list(iterations = 200))
+```
+:::
+
+::: {.column width="45%"}
+::: {style="font-size: 0.85em;"}
+**Amazon: "Customers who bought this also bought..."**
+
+**How it works:**
+- Analyzes millions of purchase histories
+- Finds patterns in co-purchasing behavior
+- Recommends based on similarity
+
+**Business Value:**
+- **35% of Amazon's revenue** from recommendations
+- Increases average order value by **20-30%**
+- Improves customer experience
+:::
+
+::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
+## Key Insight
+Same purchase patterns = Similar preferences
+:::
+:::
+:::
+
+### Healthcare
+::: {.columns}
+::: {.column width="55%"}
+```{r recommendation-health}
+library(tidygraph)
+
+edges_health <- data.frame(
+  from = c("Symptoms", "Diagnosis", "Diagnosis", "Treatment 1", "Treatment 2"),
+  to = c("Diagnosis", "Treatment 1", "Treatment 2", "Outcome", "Outcome"),
+  label = c("92%", "Best", "Alt", "Success", "Success"),
+  title = c("92% match with similar cases", "Recommended treatment", "Alternative option", "Success rate", "Success rate")
+)
+
+network_health <- as_tbl_graph(edges_health, directed = TRUE)
+vis_data <- toVisNetworkData(network_health)
+
+vis_data$nodes$group <- c("input", "diagnosis", "treatment", "treatment", "outcome")
+vis_data$nodes$icon.code <- c("f0f3", "f0f1", "f0f0", "f0f0", "f004")
+vis_data$nodes$icon.color <- c("#3498db", "#9b59b6", "#27ae60", "#27ae60", "#f39c12")
+vis_data$nodes$title <- c("Patient presenting symptoms", "Matched diagnosis (92%)", "Primary treatment option", "Alternative treatment", "Predicted outcome")
+
+visNetwork(nodes = vis_data$nodes, edges = vis_data$edges, width = "100%", height = "350px") %>%
+  addFontAwesome() %>%
+  visGroups(groupname = "input", shape = "icon", icon = list(code = "f0f3", size = 50, color = "#3498db")) %>%
+  visGroups(groupname = "diagnosis", shape = "icon", icon = list(code = "f0f1", size = 50, color = "#9b59b6")) %>%
+  visGroups(groupname = "treatment", shape = "icon", icon = list(code = "f0f0", size = 50, color = "#27ae60")) %>%
+  visGroups(groupname = "outcome", shape = "icon", icon = list(code = "f004", size = 50, color = "#f39c12")) %>%
+  visEdges(arrows = "to", smooth = TRUE, font = list(size = 11), color = list(color = "#95a5a6", highlight = "#9b59b6")) %>%
+  visOptions(highlightNearest = list(enabled = TRUE, hover = TRUE)) %>%
+  visInteraction(hover = TRUE, dragNodes = TRUE, dragView = TRUE, zoomView = TRUE) %>%
+  visLayout(randomSeed = 456) %>%
+  visPhysics(enabled = TRUE, solver = "forceAtlas2Based",
+    forceAtlas2Based = list(gravitationalConstant = -80, springLength = 150, springConstant = 0.05),
+    stabilization = list(iterations = 200))
+```
+:::
+
+::: {.column width="45%"}
+::: {style="font-size: 0.85em;"}
+**Treatment recommendations based on similar patient outcomes**
+
+**How it works:**
+- Analyzes thousands of clinical cases
+- Matches symptoms to diagnoses (92% accuracy)
+- Suggests treatments with best outcomes
+
+**Business Value:**
+- Reduces diagnostic errors
+- Faster, evidence-based decisions
+- Lower costs through fewer unnecessary tests
+- Better patient outcomes
+:::
+
+::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
+## Key Insight
+Similar symptoms = Similar treatments work
+:::
+:::
+:::
+
+### Hiring
+::: {.columns}
+::: {.column width="55%"}
+```{r recommendation-hiring}
+library(tidygraph)
+
+edges_hr <- data.frame(
+  from = c("Candidate A", "Candidate B", "Candidate C"),
+  to = c("Top Match", "Top Match", "Top Match"),
+  label = c("89%", "76%", "65%"),
+  title = c("89% similarity with successful employees", "76% similarity", "65% similarity")
+)
+
+network_hr <- as_tbl_graph(edges_hr, directed = TRUE)
+vis_data <- toVisNetworkData(network_hr)
+
+vis_data$nodes$group <- c("candidate", "candidate", "candidate", "result")
+vis_data$nodes$icon.code <- c("f007", "f007", "f007", "f005")
+vis_data$nodes$icon.color <- c("#3498db", "#3498db", "#3498db", "#27ae60")
+vis_data$nodes$title <- c("89% match score", "76% match score", "65% match score", "Best fit candidate")
+
+visNetwork(nodes = vis_data$nodes, edges = vis_data$edges, width = "100%", height = "350px") %>%
+  addFontAwesome() %>%
+  visGroups(groupname = "candidate", shape = "icon", icon = list(code = "f007", size = 50, color = "#3498db")) %>%
+  visGroups(groupname = "result", shape = "icon", icon = list(code = "f005", size = 50, color = "#27ae60")) %>%
+  visEdges(arrows = "to", smooth = TRUE, font = list(size = 11), color = list(color = "#95a5a6", highlight = "#3498db")) %>%
+  visOptions(highlightNearest = list(enabled = TRUE, hover = TRUE)) %>%
+  visInteraction(hover = TRUE, dragNodes = TRUE, dragView = TRUE, zoomView = TRUE) %>%
+  visLayout(randomSeed = 789) %>%
+  visPhysics(enabled = TRUE, solver = "forceAtlas2Based",
+    forceAtlas2Based = list(gravitationalConstant = -80, springLength = 150, springConstant = 0.05),
+    stabilization = list(iterations = 200))
+```
+:::
+
+::: {.column width="45%"}
+::: {style="font-size: 0.85em;"}
+**LinkedIn matching candidates to roles**
+
+**How it works:**
+- Analyzes profiles of successful employees
+- Compares candidate characteristics
+- Ranks by similarity to top performers
+
+**Business Value:**
+- **40% higher retention** for AI-matched hires
+- Reduces time-to-hire from months to weeks
+- Better culture fit
+- Removes unconscious bias
+:::
+
+::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
+## Key Insight
+Similar profiles = Similar success
+:::
+:::
+:::
+
+### Fraud Detection
+::: {.columns}
+::: {.column width="55%"}
+```{r fraud-detection-tab}
+set.seed(111)
+
+fraud_data <- tibble(
+  transaction_amount = c(rnorm(800, 50, 30), rnorm(200, 300, 100)),
+  velocity_score = c(rnorm(800, 30, 15), rnorm(200, 85, 20)),
+  fraud = c(rep("Legitimate", 800), rep("Fraud", 200))
+) %>%
+  filter(transaction_amount > 0, velocity_score > 0)
+
+p <- plot_ly(fraud_data, x = ~transaction_amount, y = ~velocity_score, 
+             color = ~fraud, type = 'scatter', mode = 'markers',
+             marker = list(size = 5, opacity = 0.6, line = list(width = 0.5, color = '#ffffff')), 
+             height = 350, colors = c("#27ae60", "#e74c3c")) %>%
+  layout(
+    title = list(text = "Real-Time Fraud Detection", font = list(size = 12)),
+    xaxis = list(title = "Transaction Amount ($)", titlefont = list(size = 11), tickfont = list(size = 10), gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Velocity Score", titlefont = list(size = 11), tickfont = list(size = 10), gridcolor = 'rgba(128,128,128,0.1)'),
+    hovermode = 'closest', plot_bgcolor = '#ffffff', paper_bgcolor = '#ffffff',
+    font = list(family = "Arial, sans-serif", size = 10),
+    shapes = list(list(type = "line", x0 = 0, x1 = 500, y0 = 60, y1 = 60, line = list(color = "#f39c12", width = 2, dash = "dash"))),
+    annotations = list(list(x = 400, y = 65, text = "Risk Threshold", showarrow = FALSE, font = list(color = "#f39c12", size = 10, family = "Arial"))),
+    legend = list(bgcolor = 'rgba(255,255,255,0.8)', font = list(size = 10)),
+    margin = list(l = 50, r = 30, t = 40, b = 40)) %>%
+  plotly_config_hq()
+
+p
+```
+:::
+
+::: {.column width="45%"}
+::: {style="font-size: 0.85em;"}
+**Credit card fraud detection in milliseconds**
+
+**How it works:**
+- Analyzes transaction patterns in real-time
+- Compares to user's behavior history
+- Flags anomalies above risk threshold
+
+**Business Value:**
+- **95%** fraud detection rate
+- **0.1%** false positive rate
+- Saves banks **$billions** annually
+- Protects customers in real-time
+:::
+
+::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
+## Key Insight
+Unusual behavior = Potential fraud
+:::
+:::
+:::
+
+### Sentiment Analysis
+::: {.columns}
+::: {.column width="60%"}
+```{r sentiment-analysis-stocks}
+library(quantmod)
+library(gt)
+library(gtExtras)
+
+top_stocks <- c("AAPL", "MSFT", "GOOGL", "AMZN", "TSLA")
+stock_data <- data.frame()
+stock_prices_df <- data.frame()
+
+logo_urls <- c(
+  "https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg",
+  "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Alphabet_Inc_Logo_2015.svg/2560px-Alphabet_Inc_Logo_2015.svg.png",
+  "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Tesla_Motors.svg/800px-Tesla_Motors.svg.png"
+)
+
+sentiment_scores <- c(0.5, -0.2, 0, 0.7, -0.5)
+
+for (i in 1:length(top_stocks)) {
+  stock = top_stocks[i]
+  tryCatch({
+    out <- quantmod::getSymbols(stock, from = "2023-09-30", to = "2024-09-30", periodicity = "daily", auto.assign = FALSE)
+    stock_prices <- Cl(out)
+    stock_volume <- Vo(out)
+    
+    if (length(stock_prices) > 0 && length(stock_volume) > 0) {
+      last_price <- stock_prices[nrow(stock_prices)]
+      volume <- stock_volume[nrow(stock_volume)]
+      pct_change <- (last_price - as.numeric(stock_prices[nrow(stock_prices) - 1])) / as.numeric(stock_prices[nrow(stock_prices) - 1]) * 100
+      
+      stock_info <- data.frame(ticker = stock, last_price = last_price, volume = volume, pct_change = pct_change)
+      colnames(stock_info) <- c("ticker", "last_price", "volume", "pct_change")
+      stock_data <- rbind(stock_data, stock_info)
+      
+      stock_prices_df <- rbind(stock_prices_df, 
+                               data.frame("ticker" = rep(stock, nrow(stock_prices)),
+                                          "prices" = as.numeric(stock_prices), 
+                                          "volume" = as.numeric(stock_volume),
+                                          "logo" = logo_urls[i],
+                                          "sentiment" = sentiment_scores[i],
+                                          "last_price" = as.numeric(last_price),
+                                          "last_volume" = as.numeric(volume),
+                                          "pct_change" = as.numeric(pct_change)))
+    }
+  }, error = function(e) {
+    message(paste("Error fetching data for", stock, ":", e$message))
+  })
+}
+
+pos_colors <- c("#5bb450", "#8bca84")
+neg_colors <- c("#ff2c2c", "#f69697")
+neutral_color <- "#FFA500"
+
+stock_prices_df$volume <- round(stock_prices_df$volume / 1e6, 2)
+
+stock_prices_df2 <- stock_prices_df %>%
+  select(logo, ticker, last_price, volume, pct_change, sentiment, prices)
+
+stock_prices_df2 %>%
+  group_by(ticker) |>
+  summarise(logo = logo[1], ticker = ticker[1], last_price = last_price[1],
+            volume = volume[1], pct_change = pct_change[1], sentiment = sentiment[1],
+            prices_data = list(prices)) %>%
+  ungroup() %>%
+  select(logo, ticker, last_price, volume, pct_change, sentiment, prices_data) %>%
+  gt() %>%
+  gt_plt_sparkline(prices_data, type = "shaded",
+                   palette = c("#248c7a", "#248c7a", neg_colors[1], pos_colors[1], "#d4e8e6"),
+                   fig_dim = c(6, 22)) %>%
+  gt_img_rows(logo, height = 28) %>%
+  tab_style(style = list(cell_fill(color = pos_colors[2])), locations = cells_body(columns = pct_change, rows = pct_change >= 0)) %>%
+  tab_style(style = list(cell_fill(color = pos_colors[1])), locations = cells_body(columns = pct_change, rows = pct_change >= 1)) %>%
+  tab_style(style = list(cell_fill(color = neg_colors[2])), locations = cells_body(columns = pct_change, rows = pct_change < 0)) %>%
+  tab_style(style = list(cell_fill(color = neg_colors[1])), locations = cells_body(columns = pct_change, rows = pct_change <= -1)) %>%
+  cols_label(logo = "", ticker = "Ticker", last_price = "Price", volume = "Vol (M)",
+             pct_change = "Chg %", sentiment = "Sentiment", prices_data = "YTD") %>%
+  fmt_number(columns = pct_change, decimals = 2) %>%
+  fmt_number(columns = volume, decimals = 2) %>%
+  fmt_number(columns = last_price, decimals = 2) %>%
+  tab_style(style = list(cell_text(color = "white")), locations = cells_body(columns = pct_change)) %>%
+  cols_width(logo ~ px(50), ticker ~ px(55), last_price ~ px(65), volume ~ px(65), pct_change ~ px(65), sentiment ~ px(75), prices_data ~ px(95)) %>%
+  tab_style(style = list(cell_text(style = "italic")), locations = cells_body(columns = ticker)) %>%
+  tab_style(style = list(cell_text(align = "center")), locations = cells_body(columns = logo)) %>%
+  text_transform(
+    locations = cells_body(columns = sentiment),
+    fn = function(x) {
+      x <- as.numeric(x)
+      sentiment_bars <- sapply(x, function(val) {
+        if (val > 0) {
+          width_positive <- pmax(0, pmin(50 * val, 50))
+          return(paste0('<div style="display: flex; width: 100%; height: 12px;"><div style="background-color:transparent; width: 50%; height: 12px;"></div><div style="background-color:', pos_colors[1], '; width:', width_positive, '%; height: 12px;"></div></div>'))
+        } else if (val < 0) {
+          width_neg <- min(50, 50 * abs(val))
+          return(paste0('<div style="display: flex; width: 100%; height: 12px;"><div style="background-color:transparent; width:', 50 - width_neg, '%; height: 12px;"></div><div style="background-color:', neg_colors[1], '; width:', width_neg, '%; height: 12px;"></div></div>'))
+        } else {
+          return(paste0('<div style="display: flex; width: 100%; height: 10px;"><div style="background-color:transparent; width:', 45, '%; height: 10px;"></div><div style="background-color:', neutral_color, '; width:', 10, '%; height: 10px;"></div></div>'))
+        }
+      })
+      return(sentiment_bars)
+    }
+  ) %>%
+  tab_options(heading.title.font.size = px(16), heading.subtitle.font.size = px(12),
+              table.font.size = px(11), data_row.padding = px(0), source_notes.font.size = px(9),
+              table_body.hlines.width = px(1), column_labels.padding = px(2)) %>%
+  tab_header(title = "Top 5 S&P 500 Stocks", subtitle = "Trading info & sentiment") %>%
+  tab_source_note(md("Data: 9/30/23-9/30/24")) %>%
+  gt_theme_dark() %>%
+  opt_css(css = ".gt_table { line-height: 1.0; } .gt_row { line-height: 1.0; height: 32px !important; vertical-align: middle; } .gt_col_heading { padding-top: 2px !important; padding-bottom: 2px !important; }")
+```
+:::
+
+::: {.column width="40%"}
+::: {style="font-size: 0.85em;"}
+**NLP analyzes earnings reports to predict market sentiment**
+
+**How it works:**
+- Processes text from earnings calls
+- Extracts sentiment (positive/negative/neutral)
+- Combines with price & volume data
+
+**Business Value:**
+- Real-time sentiment tracking
+- Predicts stock movements
+- Informs trading decisions
+- Quantifies qualitative data
+:::
+
+::: {.callout-tip icon="false" style="margin-top: 10px; font-size: 0.8em;"}
+## Key Insight
+Language patterns = Market sentiment
+:::
+:::
+:::
+:::
+
+## Clustering: Pattern Recognition {.smaller}
+
+::: {.panel-tabset}
+### Customer Segmentation
+::: {.columns}
+::: {.column width="60%"}
+```{r clustering-customers}
+set.seed(100)
+customers <- tibble(
+  spending = c(rnorm(60, 200, 30), rnorm(80, 500, 50), rnorm(60, 1000, 100)),
+  frequency = c(rnorm(60, 2, 0.5), rnorm(80, 8, 1), rnorm(60, 20, 3)),
+  segment = factor(c(rep("Low Value", 60), rep("Medium Value", 80), rep("High Value", 60)))
+)
+
+p <- plot_ly(customers, x = ~frequency, y = ~spending, color = ~segment,
+             type = 'scatter', mode = 'markers', height = 350,
+             marker = list(size = 9, opacity = 0.7, line = list(width = 1, color = '#ffffff')),
+             colors = c("#e74c3c", "#f39c12", "#27ae60")) %>%
+  layout(
+    title = list(text = "Customer Segments", font = list(size = 16)),
+    xaxis = list(title = "Purchase Frequency (per month)", gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Average Spending ($)", gridcolor = 'rgba(128,128,128,0.1)'),
+    plot_bgcolor = '#ffffff',
+    font = list(family = "Arial, sans-serif"),
+    legend = list(bgcolor = 'rgba(255,255,255,0.8)')
+  ) %>%
+  plotly_config_hq()
+p
+```
+:::
+
+::: {.column width="40%"}
+::: {style="font-size: 0.85em;"}
+**K-means clustering identifies customer groups**
+
+**Business Value:**
+- Target marketing campaigns
+- Personalize offers
+- Optimize pricing strategies
+- Allocate resources efficiently
+:::
+:::
+:::
+
+### Disease Patterns
+::: {.columns}
+::: {.column width="60%"}
+```{r clustering-disease}
+set.seed(200)
+patients <- tibble(
+  symptom1 = c(rnorm(50, 3, 0.5), rnorm(50, 7, 0.5), rnorm(50, 5, 0.8)),
+  symptom2 = c(rnorm(50, 2, 0.4), rnorm(50, 8, 0.6), rnorm(50, 5, 0.7)),
+  condition = factor(c(rep("Type A", 50), rep("Type B", 50), rep("Type C", 50)))
+)
+
+p <- plot_ly(patients, x = ~symptom1, y = ~symptom2, color = ~condition,
+             type = 'scatter', mode = 'markers', height = 350,
+             marker = list(size = 9, opacity = 0.7, line = list(width = 1, color = '#ffffff')),
+             colors = c("#3498db", "#e74c3c", "#9b59b6")) %>%
+  layout(
+    title = list(text = "Disease Pattern Recognition", font = list(size = 16)),
+    xaxis = list(title = "Symptom Severity 1", gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Symptom Severity 2", gridcolor = 'rgba(128,128,128,0.1)'),
+    plot_bgcolor = '#ffffff',
+    font = list(family = "Arial, sans-serif"),
+    legend = list(bgcolor = 'rgba(255,255,255,0.8)')
+  ) %>%
+  plotly_config_hq()
+p
+```
+:::
+
+::: {.column width="40%"}
+::: {style="font-size: 0.85em;"}
+**Clustering identifies disease subtypes**
+
+**Business Value:**
+- Faster diagnosis
+- Personalized treatment plans
+- Drug development targeting
+- Better patient outcomes
+:::
+:::
+:::
+
+### Market Segments
+::: {.columns}
+::: {.column width="60%"}
+```{r clustering-market}
+set.seed(300)
+markets <- tibble(
+  innovation = c(rnorm(40, 8, 1), rnorm(60, 5, 0.8), rnorm(50, 2, 0.5)),
+  growth = c(rnorm(40, 7, 0.8), rnorm(60, 5, 1), rnorm(50, 3, 0.6)),
+  type = factor(c(rep("Leaders", 40), rep("Challengers", 60), rep("Followers", 50)))
+)
+
+p <- plot_ly(markets, x = ~innovation, y = ~growth, color = ~type,
+             type = 'scatter', mode = 'markers', height = 350,
+             marker = list(size = 11, opacity = 0.7, line = list(width = 1, color = '#ffffff')),
+             colors = c("#27ae60", "#f39c12", "#95a5a6")) %>%
+  layout(
+    title = list(text = "Market Positioning", font = list(size = 16)),
+    xaxis = list(title = "Innovation Index", gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Growth Rate", gridcolor = 'rgba(128,128,128,0.1)'),
+    plot_bgcolor = '#ffffff',
+    font = list(family = "Arial, sans-serif"),
+    legend = list(bgcolor = 'rgba(255,255,255,0.8)')
+  ) %>%
+  plotly_config_hq()
+p
+```
+:::
+
+::: {.column width="40%"}
+::: {style="font-size: 0.85em;"}
+**Clustering reveals competitive landscape**
+
+**Business Value:**
+- Identify market opportunities
+- Benchmark against competitors
+- Strategic positioning
+- Investment decisions
+:::
+:::
+:::
+
+### Image Compression
+::: {.columns}
+::: {.column width="65%"}
+```{r clustering-image-compression}
+library(jpeg)
+library(cowplot)
+
+img <- readJPEG("Image.jpg")
+imgDm <- dim(img)
+
+imgRGB <- data.frame(
+  x = rep(1:imgDm[2], each = imgDm[1]),
+  y = rep(imgDm[1]:1, imgDm[2]),
+  R = as.vector(img[,,1]),
+  G = as.vector(img[,,2]),
+  B = as.vector(img[,,3])
+)
+
+p1 <- ggplot(data = imgRGB, aes(x = x, y = y)) + 
+  geom_raster(fill = rgb(imgRGB[c("R", "G", "B")])) +
+  labs(title = "Original") +
+  theme_void() +
+  theme(plot.title = element_text(size = 11, face = "bold", hjust = 0.5))
+
+feat <- imgRGB[, c("x","y","R","G","B")]
+feat_scaled <- scale(feat)
+
+set.seed(1)
+kClusters <- 10
+km5 <- kmeans(feat_scaled, centers = kClusters, nstart = 5)
+
+imgRGB$cluster <- km5$cluster
+
+palette <- imgRGB %>%
+  group_by(cluster) %>%
+  summarize(R = mean(R), G = mean(G), B = mean(B), .groups = "drop") %>%
+  mutate(hex = rgb(R, G, B))
+
+imgRGB_plot <- imgRGB %>%
+  left_join(palette, by = "cluster")
+
+p2 <- ggplot(imgRGB_plot, aes(x = x, y = y, fill = hex)) +
+  geom_raster() +
+  scale_fill_identity() +
+  coord_equal() +
+  labs(title = paste("K-means:", kClusters, "colors")) +
+  theme_void() +
+  theme(plot.title = element_text(size = 11, face = "bold", hjust = 0.5))
+
+plot_grid(p1, p2, ncol = 2)
+```
+:::
+
+::: {.column width="35%"}
+::: {style="font-size: 0.85em;"}
+**Clustering in 5D (x, y, R, G, B)**
+
+**Business Value:**
+- Reduces file size by 80-90%
+- Faster image loading
+- Lower bandwidth costs
+- Maintains visual quality
+:::
+:::
+:::
+:::
+
+# 🔮 The AI Revolution {background-color="#2c3e50"}
+
+## GenAI is Democratizing Analytics {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**Before (2023):**
+```python
+# You needed to write SQL
+SELECT 
+  customer_id,
+  SUM(revenue) as total,
+  COUNT(*) as orders
+FROM transactions
+WHERE date > '2025-01-01'
+GROUP BY customer_id
+HAVING total > 1000
+ORDER BY total DESC;
+```
+
+**Required:** Technical skills, SQL knowledge, data structure understanding
+:::
+
+::: {.column width="50%"}
+**Now (2025):**
+
+> *"Show me customers who spent more than $1000 this year, sorted by total spending"*
+
+**Required:** Natural language
+
+::: {.callout-tip icon="false"}
+## The Change
+- ChatGPT writes the code
+- Anyone can analyze data
+- **No technical barrier**
+:::
+:::
+:::
+
+## But... New Challenges {.smaller}
+```{r ai-challenges}
+challenges <- tibble(
+  challenge = c("Hallucinations", "Bias Amplification", "Black Box", 
+                "Data Privacy", "Over-reliance"),
+  severity = c(85, 78, 70, 90, 65),
+  frequency = c(45, 60, 80, 40, 70)
+)
+
+p <- plot_ly(challenges, x = ~frequency, y = ~severity,
+             text = ~challenge, type = 'scatter', mode = 'markers+text',
+             height = 400,
+             marker = list(size = ~severity/2.5, color = ~severity,
+                          colorscale = 'Reds', showscale = TRUE,
+                          colorbar = list(title = "Severity", titlefont = list(size = 12)),
+                          line = list(width = 2, color = '#ffffff')),
+             textposition = 'top center',
+             textfont = list(size = 13, family = "Arial")) %>%
+  layout(
+    title = list(text = "AI Analytics: Risk Landscape", font = list(size = 16)),
+    xaxis = list(title = "Frequency of Occurrence (%)", range = c(30, 100), gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Severity of Impact (%)", range = c(60, 95), gridcolor = 'rgba(128,128,128,0.1)'),
+    plot_bgcolor = '#ffffff',
+    paper_bgcolor = '#ffffff',
+    font = list(family = "Arial, sans-serif")
+  ) %>%
+  plotly_config_hq()
+
+p
+```
+
+::: {.callout-warning}
+## Critical: AI doesn't replace critical thinking - it amplifies it
+:::
+
+## The Future Analyst {.smaller}
+
+::: {.columns}
+::: {.column width="60%"}
+```{r future-skills}
+skills <- tibble(
+  skill = c("SQL/Python", "Statistics", "Business Acumen", 
+            "Critical Thinking", "Prompt Engineering", "Ethics/AI Safety"),
+  importance_2020 = c(95, 85, 70, 60, 0, 30),
+  importance_2025 = c(60, 80, 95, 100, 85, 90)
+)
+
+skills_long <- skills %>%
+  pivot_longer(cols = starts_with("importance"), 
+               names_to = "year", values_to = "importance") %>%
+  mutate(year = ifelse(year == "importance_2020", "2020", "2025"))
+
+p <- plot_ly(skills_long, x = ~skill, y = ~importance, color = ~year,
+             type = 'bar', colors = c("#95a5a6", "#3498db"), height = 380) %>%
+  layout(
+    title = list(text = "Evolving Analytics Skills", font = list(size = 16)),
+    xaxis = list(title = "", tickfont = list(size = 11)),
+    yaxis = list(title = "Importance (%)", gridcolor = 'rgba(128,128,128,0.1)'),
+    barmode = 'group',
+    plot_bgcolor = '#ffffff',
+    paper_bgcolor = '#ffffff',
+    font = list(family = "Arial, sans-serif"),
+    legend = list(x = 0.7, y = 0.95, bgcolor = 'rgba(255,255,255,0.8)', title = list(text = "Year"))
+  ) %>%
+  plotly_config_hq()
+
+p
+```
+:::
+
+::: {.column width="40%"}
+**The New Skillset:**
+
+::: {.incremental}
+1. **Ask better questions** (not just write code)
+2. **Validate AI outputs** (critical thinking)
+3. **Understand context** (business acumen)
+4. **Navigate ethics** (responsibility)
+5. **Communicate insights** (storytelling)
+:::
+
+::: {.fragment .callout-note}
+## Bottom Line
+Technical skills are **table stakes**.
+
+**Strategic thinking** is the differentiator.
+:::
+:::
+:::
+
+# The Big Picture {background-color="#34495e"}
+
+## Conclusions {.smaller}
+
+::: {.incremental}
+1. **Data reveals hidden patterns** - Target, Spotify, Uber all see what humans miss
+
+2. **Analytics is everywhere** - From healthcare to hurricanes
+
+3. **Techniques are transferable** - Learn one algorithm, solve many problems
+
+4. **AI is a tool, not magic** - Amplifies both insights AND biases
+
+5. **The future belongs to critical thinkers** - Not just data crunchers
+:::
+
+## Your Competitive Advantage {background-image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1600" background-opacity="0.2"}
+
+::: {style="font-size: 1.2em; margin-top: 30px;"}
+In 10 years,
+
+**every manager**
+
+will also be a
+
+**data manager**
+:::
+
+::: {.fragment}
+::: {.callout-tip icon="false" style="margin-top: 8px;"}
+## The Question
+Will you use analytics **better** than your competitors?
+:::
+:::
+
+## {background-color="#000000"}
+
+::: {.r-fit-text}
+**Thank You!**
+:::
+
+::: {style="margin-top: 70px; font-size: 0.5em; color: #888;"}
+Contact: allan.quadros@unf.edu
+
+Slides: https://allanvc.github.io/analytics-honors
+:::
