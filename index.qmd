@@ -217,7 +217,7 @@ visNetwork(nodes, edges, width = "100%", height = "500px") %>%
 ::: {style="color: white;"}
 ::: incremental
 1.  **Mind-Blowing Cases** - When data reveals the unexpected
-2.  **Surprising Applications** - Analytics in unexpected places
+<!-- 2.  **Surprising Applications** - Analytics in unexpected places -->
 3.  **Transferable Skills** - One technique, infinite applications
 4.  **The Future** - AI is changing everything
 
