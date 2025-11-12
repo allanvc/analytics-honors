@@ -432,7 +432,7 @@ Optimizes **driver distribution** + **maximizes revenue** + **manages demand**
 ## One Algorithm, Many Applications {.smaller}
 
 ::: {style="font-size: 0.75em;"}
-**Collaborative Filtering - The Universal Recommender:**
+**Supervised Learning Algorithms:**
 :::
 
 ::: panel-tabset
@@ -791,6 +791,10 @@ Language patterns = Market sentiment
 :::
 
 ## Clustering: Pattern Recognition {.smaller}
+
+::: {style="font-size: 0.75em;"}
+**Supervised Learning Algorithms:**
+:::
 
 ::: panel-tabset
 ### Customer Segmentation
