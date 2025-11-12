@@ -425,7 +425,139 @@ Optimizes **driver distribution** + **maximizes revenue** + **manages demand**
 :::
 :::
 
-# Surprising Applications {background-color="#3498db"}
+
+## Google Flu Trends {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+**The Idea:**
+
+People search for flu symptoms BEFORE going to the doctor
+
+**Searches analyzed:**
+
+- "flu symptoms"
+- "fever medicine"
+- "body aches"
+- "pharmacy near me"
+- Geographic patterns
+
+**PLUS:** ambient coughing sound
+
+<!-- **Google: Real-time detection** -->
+
+:::
+
+::: {.column width="50%"}
+```{r flu-trends}
+# Simulate flu detection comparison
+weeks <- 1:52
+set.seed(321)
+
+flu_data <- tibble(
+  week = rep(weeks, 3),
+  source = rep(c("Actual Cases", "Google Trends", "CDC Reports"), each = length(weeks))
+) %>%
+  mutate(
+    cases = case_when(
+      source == "Actual Cases" ~ 100 + 400 * dnorm(week, 8, 4) * 50 + rnorm(n(), 0, 10),
+      source == "Google Trends" ~ 100 + 400 * dnorm(week, 7.7, 4) * 50 + rnorm(n(), 0, 15),
+      source == "CDC Reports" ~ 100 + 400 * dnorm(week, 9, 4) * 50 + rnorm(n(), 0, 10)
+    )
+  )
+
+p <- plot_ly(flu_data, x = ~week, y = ~cases, color = ~source,
+             type = 'scatter', mode = 'lines', height = 400,
+             colors = c("#e74c3c", "#3498db", "#95a5a6"),
+             line = list(width = 4)) %>%
+  layout(
+    title = list(text = "Flu Detection Speed: Google vs CDC", font = list(size = 16)),
+    xaxis = list(title = "Week of Year", gridcolor = 'rgba(128,128,128,0.1)'),
+    yaxis = list(title = "Relative Cases", gridcolor = 'rgba(128,128,128,0.1)'),
+    hovermode = 'x unified',
+    plot_bgcolor = '#f8f9fa',
+    paper_bgcolor = '#f8f9fa',
+    font = list(family = "Arial, sans-serif"),
+    legend = list(bgcolor = 'rgba(255,255,255,0.8)', x = 0.7, y = 0.95),
+    annotations = list(
+      list(x = 2.5, y = 1000,
+           text = "Google detects<br>~1 week earlier",
+           showarrow = TRUE, arrowhead = 2, arrowwidth = 2,
+           ax = -60, ay = -60,
+           font = list(size = 13, family = "Arial"))
+    )
+  ) %>%
+  plotly_config_hq()
+
+p
+```
+
+**The Power:**
+
+CDC: 1-2 week delay
+
+:::
+:::
+
+::: {.callout-note}
+## Impact: Early detection = Better preparation for healthcare systems
+:::
+
+## Walmart's Hurricane Analytics {.smaller}
+
+```{r walmart-products}
+# Products that surge before hurricanes
+products <- tibble(
+  product = c("Strawberry Pop-Tarts", "Beer", "Flashlights", 
+              "Batteries", "Bottled Water", "Bread"),
+  sales_increase = c(700, 350, 250, 220, 180, 150),
+  surprise_factor = c(95, 40, 20, 15, 10, 10)
+)
+
+p1 <- plot_ly(products, x = ~reorder(product, sales_increase), y = ~sales_increase,
+              type = 'bar', height = 380, marker = list(
+                color = ~surprise_factor,
+                colorscale = 'Reds',
+                showscale = TRUE,
+                colorbar = list(title = "Surprise<br>Factor", titlefont = list(size = 12)),
+                line = list(width = 1.5, color = '#ffffff')
+              ),
+              text = ~paste0("+", sales_increase, "%"),
+              textposition = 'outside',
+              textfont = list(size = 13)) %>%
+  layout(
+    title = list(text = "Product Sales Increase Before Hurricanes", font = list(size = 16)),
+    xaxis = list(title = "", tickfont = list(size = 12)),
+    yaxis = list(title = "Sales Increase (%)", gridcolor = 'rgba(128,128,128,0.1)'),
+    plot_bgcolor = '#ffffff',
+    paper_bgcolor = '#ffffff',
+    font = list(size = 12, family = "Arial, sans-serif")
+  ) %>%
+  plotly_config_hq()
+
+p1
+```
+
+::: {.columns}
+::: {.column width="50%"}
+**The Insight:**
+
+People want **comfort food** that doesn't need refrigeration
+
+**Not just survival items!**
+:::
+
+::: {.column width="50%"}
+**Business Impact:**
+
+- Automated restocking algorithms
+- Regional pre-positioning
+- **$Millions saved** in logistics
+:::
+:::
+
+
+<!-- # Surprising Applications {background-color="#3498db"} -->
 
 # 🔄 Transferable Techniques {background-color="#9b59b6"}
 
