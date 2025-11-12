@@ -1,0 +1,36 @@
+/*-- scss:defaults --*/
+$font-family-sans-serif: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$presentation-font-size-root: 42px;
+
+/*-- scss:rules --*/
+.reveal strong {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.reveal h1 { font-size: 2.5em; }
+.reveal h2 { font-size: 1.8em; }
+
+.callout-tip {
+  border-left: 5px solid #27ae60;
+  background-color: #e8f8f5;
+  padding: 1em;
+}
+
+.callout-important {
+  border-left: 5px solid #e74c3c;
+  background-color: #fadbd8;
+  padding: 1em;
+}
+
+.callout-note {
+  border-left: 5px solid #3498db;
+  background-color: #d6eaf8;
+  padding: 1em;
+}
+
+.callout-warning {
+  border-left: 5px solid #f39c12;
+  background-color: #fef5e7;
+  padding: 1em;
+}
